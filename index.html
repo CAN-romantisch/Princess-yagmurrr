@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050506">
+<title>For Yağmur.</title>
+
+<style>
+:root{
+--bg:#050506;--panel:rgba(255,255,255,.055);--line:rgba(255,255,255,.11);
+--text:#f5f5f7;--muted:#8e8e93;--soft:#b9b9c0;--green:#30d158;
+--radius:28px;--max:1180px
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+background:radial-gradient(circle at 50% -10%,#191925 0%,#09090d 35%,#050506 70%);
+color:var(--text);
+font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Arial,sans-serif;
+overflow-x:hidden
+}
+::selection{background:rgba(41,151,255,.35);color:#fff}
+button,a{font:inherit}
+button{cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+/* LOADER */
+#loader{
+position:fixed;inset:0;background:#050506;z-index:10000;
+display:grid;place-items:center;transition:opacity .8s,visibility .8s
+}
+.loader-inner{text-align:center}
+.loader-logo{font-size:42px;font-weight:700;letter-spacing:-.06em}
+.loader-line{
+width:160px;height:2px;background:#1c1c20;border-radius:99px;
+margin:22px auto;overflow:hidden
+}
+.loader-line i{
+display:block;width:45%;height:100%;background:#f5f5f7;
+border-radius:99px;animation:load 1.35s ease-in-out infinite
+}
+@keyframes load{
+0%{transform:translateX(-120%)}
+100%{transform:translateX(340%)}
+}
+.loader-inner p{font-size:12px;color:var(--muted);letter-spacing:.12em}
+
+/* CURSOR */
+#cursor{
+position:fixed;width:18px;height:18px;
+border:1px solid rgba(255,255,255,.55);
+border-radius:50%;pointer-events:none;z-index:9999;
+transform:translate(-50%,-50%);
+transition:width .25s,height .25s,background .25s;
+mix-blend-mode:difference
+}
+@media(max-width:800px){#cursor{display:none}}
+
+/* BACKGROUND */
+.grain{
+position:fixed;inset:0;pointer-events:none;opacity:.045;z-index:20;
+background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")
+}
+.orb{
+position:fixed;border-radius:50%;filter:blur(100px);
+pointer-events:none;opacity:.22;z-index:-1
+}
+.orb.one{width:500px;height:500px;background:#3f2b96;top:-180px;left:-160px}
+.orb.two{width:480px;height:480px;background:#7a1630;right:-220px;top:35%}
+.orb.three{width:420px;height:420px;background:#113b76;left:25%;bottom:-220px}
+
+/* NAVIGATION */
+nav{
+position:fixed;top:18px;left:50%;transform:translateX(-50%);
+width:min(calc(100% - 32px),820px);height:58px;
+padding:0 12px 0 20px;
+display:flex;align-items:center;justify-content:space-between;
+border:1px solid var(--line);
+background:rgba(14,14,17,.62);
+backdrop-filter:blur(28px) saturate(160%);
+-webkit-backdrop-filter:blur(28px) saturate(160%);
+border-radius:999px;z-index:100;
+box-shadow:0 10px 50px rgba(0,0,0,.28)
+}
+.brand{font-weight:650;letter-spacing:-.035em;font-size:17px}
+.nav-status{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:12px}
+.status-dot{
+width:7px;height:7px;border-radius:50%;
+background:var(--green);box-shadow:0 0 14px var(--green)
+}
+.nav-time{
+font-variant-numeric:tabular-nums;color:var(--soft);
+font-size:12px;padding:9px 14px;border-radius:999px;
+background:rgba(255,255,255,.055)
+}
+
+section{position:relative}
+
+/* HERO */
+.hero{
+min-height:100svh;display:flex;align-items:center;
+justify-content:center;padding:110px 24px 60px
+}
+.hero-inner{width:min(100%,1000px);text-align:center}
+.eyebrow{
+display:inline-flex;align-items:center;gap:9px;padding:9px 14px;
+border:1px solid var(--line);border-radius:999px;color:var(--muted);
+font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+background:rgba(255,255,255,.035);animation:rise .9s .15s both
+}
+.hero h1{
+font-size:clamp(74px,14vw,190px);
+letter-spacing:-.075em;line-height:.9;margin:34px 0 26px;
+animation:rise 1s .25s both;
+background:linear-gradient(180deg,#fff 0%,#bfc0c8 75%,#6f7078 100%);
+-webkit-background-clip:text;background-clip:text;color:transparent
+}
+.hero-copy{
+max-width:580px;margin:0 auto;color:var(--muted);
+font-size:clamp(18px,2.2vw,24px);line-height:1.45;
+animation:rise 1s .42s both
+}
+.hero-avatar-wrap{
+width:min(260px,52vw);aspect-ratio:1;margin:45px auto 34px;
+position:relative;animation:rise 1s .52s both
+}
+.avatar-halo{
+position:absolute;inset:-22%;
+background:radial-gradient(circle,rgba(119,92,255,.28),transparent 65%);
+filter:blur(18px);animation:breathe 5s ease-in-out infinite
+}
+.avatar-ring{
+position:absolute;inset:0;padding:4px;border-radius:50%;
+background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(255,255,255,.06) 40%,rgba(139,92,246,.55));
+box-shadow:0 35px 100px rgba(0,0,0,.7)
+}
+.avatar{
+width:100%;height:100%;object-fit:cover;border-radius:50%;
+display:block;background:#151518;border:4px solid #09090b
+}
+@keyframes breathe{50%{transform:scale(1.08);opacity:.65}}
+.hero-question{
+font-size:clamp(34px,6.2vw,72px);letter-spacing:-.055em;
+line-height:1.04;margin:12px auto 30px;max-width:850px;
+animation:rise 1s .62s both
+}
+.hero-meta{
+display:flex;justify-content:center;gap:9px;flex-wrap:wrap;
+color:#6e6e73;font-size:13px;animation:rise 1s .72s both
+}
+.hero-meta span{
+padding:8px 11px;background:rgba(255,255,255,.035);
+border:1px solid rgba(255,255,255,.07);border-radius:999px
+}
+.scroll-cue{
+margin:55px auto 0;color:#67676d;font-size:12px;
+letter-spacing:.12em;text-transform:uppercase;
+display:flex;flex-direction:column;align-items:center;gap:12px
+}
+.scroll-cue i{
+display:block;width:1px;height:48px;
+background:linear-gradient(#777,transparent);animation:scroll 2s infinite
+}
+@keyframes scroll{
+50%{transform:scaleY(.55);transform-origin:top}
+}
+@keyframes rise{
+from{opacity:0;transform:translateY(24px);filter:blur(8px)}
+to{opacity:1;transform:none;filter:none}
+}
+
+/* CHAPTER */
+.chapter{max-width:var(--max);margin:auto;padding:160px 24px}
+.chapter-kicker{
+font-size:13px;color:var(--muted);letter-spacing:.14em;
+text-transform:uppercase;margin-bottom:24px
+}
+.display{
+font-size:clamp(46px,8vw,112px);line-height:.97;
+letter-spacing:-.07em;max-width:1000px
+}
+.display .muted{color:#55565d}
+.body-large{
+font-size:clamp(18px,2.4vw,28px);line-height:1.45;
+color:var(--soft);max-width:720px;margin-top:38px
+}
+
+/* STORY CARDS */
+.story-grid{
+display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:70px
+}
+.story-card{
+min-height:340px;border:1px solid var(--line);border-radius:var(--radius);
+background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
+padding:34px;overflow:hidden;position:relative;
+transition:transform .5s cubic-bezier(.2,.8,.2,1),border-color .4s
+}
+.story-card:hover{
+transform:translateY(-6px);border-color:rgba(255,255,255,.22)
+}
+.story-card.big{grid-column:span 2;min-height:410px}
+.card-num{color:#777;font-size:12px;letter-spacing:.12em}
+.card-title{
+font-size:clamp(30px,4vw,56px);letter-spacing:-.05em;
+margin-top:28px;max-width:650px
+}
+.card-text{
+color:var(--muted);font-size:17px;line-height:1.55;
+max-width:500px;margin-top:16px
+}
+.card-orb{
+position:absolute;width:280px;height:280px;border-radius:50%;
+filter:blur(20px);right:-90px;bottom:-110px;opacity:.32
+}
+.purple{background:#6f4cff}
+.rose{background:#d5265a}
+.blue{background:#1674df}
+
+/* QUOTE */
+.quote{
+max-width:var(--max);padding:180px 24px;margin:auto;text-align:center
+}
+.quote-mark{font-size:90px;line-height:.5;color:#6d6d75}
+.quote p{
+font-size:clamp(38px,7vw,92px);letter-spacing:-.065em;
+line-height:1.02;max-width:1000px;margin:30px auto
+}
+.quote small{
+display:block;color:var(--muted);font-size:14px;margin-top:32px
+}
+
+/* STATS */
+.stats{
+max-width:var(--max);padding:0 24px 170px;margin:auto;
+display:grid;grid-template-columns:repeat(3,1fr);gap:14px
+}
+.stat{
+border:1px solid var(--line);background:var(--panel);
+border-radius:24px;padding:32px;min-height:190px
+}
+.stat strong{
+display:block;font-size:clamp(38px,6vw,68px);letter-spacing:-.06em
+}
+.stat span{
+display:block;margin-top:12px;color:var(--muted);line-height:1.4
+}
+
+/* CONSTELLATION */
+.constellation{
+min-height:720px;max-width:var(--max);margin:auto;
+border:1px solid var(--line);border-radius:36px;
+position:relative;overflow:hidden;
+background:radial-gradient(circle at center,rgba(76,66,160,.16),transparent 48%),#08080b
+}
+.stars{
+position:absolute;inset:0;
+background-image:radial-gradient(#fff 1px,transparent 1px);
+background-size:74px 74px;opacity:.22;
+mask-image:radial-gradient(circle at center,#000 10%,transparent 78%)
+}
+.constellation-content{
+position:absolute;inset:0;display:grid;place-items:center;
+text-align:center;padding:30px
+}
+.constellation h2{
+font-size:clamp(42px,7vw,88px);letter-spacing:-.065em;line-height:.98
+}
+.constellation p{
+color:var(--muted);max-width:540px;font-size:18px;
+line-height:1.5;margin:24px auto
+}
+.orbit{
+position:absolute;border:1px solid rgba(255,255,255,.08);
+border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)
+}
+.orbit.o1{width:260px;height:260px}
+.orbit.o2{width:470px;height:470px}
+.orbit.o3{width:680px;height:680px}
+.planet{
+position:absolute;width:9px;height:9px;border-radius:50%;
+background:#fff;box-shadow:0 0 22px #fff
+}
+.planet.p1{top:19%;left:25%}
+.planet.p2{
+bottom:22%;right:24%;background:#ff9f0a;box-shadow:0 0 22px #ff9f0a
+}
+.planet.p3{
+top:28%;right:21%;background:#64d2ff;box-shadow:0 0 22px #64d2ff
+}
+
+/* REASONS */
+.reasons{max-width:var(--max);padding:170px 24px;margin:auto}
+.reason-list{margin-top:55px;border-top:1px solid var(--line)}
+.reason{
+display:grid;grid-template-columns:100px 1fr auto;gap:20px;
+align-items:center;padding:28px 0;border-bottom:1px solid var(--line);
+transition:padding .35s
+}
+.reason:hover{padding-left:12px}
+.reason-index{color:#666;font-size:13px}
+.reason h3{
+font-size:clamp(24px,4vw,46px);letter-spacing:-.045em
+}
+.reason p{color:var(--muted);font-size:15px;max-width:420px}
+.reason-plus{font-size:26px;color:#777}
+
+/* MOMENT */
+.moment{max-width:var(--max);margin:0 auto 170px;padding:0 24px}
+.moment-panel{
+border:1px solid var(--line);border-radius:34px;
+padding:clamp(30px,7vw,90px);
+background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.018));
+position:relative;overflow:hidden
+}
+.moment-panel:before{
+content:"";position:absolute;inset:auto -20% -70% auto;
+width:70%;aspect-ratio:1;
+background:radial-gradient(circle,rgba(255,55,95,.22),transparent 65%);
+filter:blur(20px)
+}
+.moment-panel h2{
+font-size:clamp(46px,8vw,110px);letter-spacing:-.07em;
+line-height:.94;position:relative
+}
+.moment-panel p{
+position:relative;max-width:650px;margin-top:30px;
+font-size:clamp(18px,2.3vw,27px);line-height:1.5;color:var(--soft)
+}
+
+/* QUESTION */
+.question-section{
+min-height:100svh;padding:120px 24px;display:flex;
+align-items:center;justify-content:center
+}
+.question-shell{
+width:min(100%,920px);text-align:center;border:1px solid var(--line);
+border-radius:38px;padding:clamp(32px,7vw,82px) 24px;
+background:rgba(12,12,15,.72);backdrop-filter:blur(35px);
+position:relative;overflow:hidden;box-shadow:0 40px 140px rgba(0,0,0,.48)
+}
+.question-shell:after{
+content:"";position:absolute;width:500px;height:500px;
+background:radial-gradient(circle,rgba(139,92,246,.17),transparent 67%);
+left:50%;top:-240px;transform:translateX(-50%);pointer-events:none
+}
+.question-shell .eyebrow{position:relative}
+.final-avatar{
+width:112px;height:112px;border-radius:50%;object-fit:cover;
+margin:30px auto 28px;position:relative;
+border:2px solid rgba(255,255,255,.25);
+box-shadow:0 20px 60px rgba(0,0,0,.55)
+}
+.question-shell h2{
+position:relative;font-size:clamp(44px,7vw,88px);
+letter-spacing:-.065em;line-height:1;margin-bottom:20px
+}
+.question-shell>p{
+position:relative;color:var(--muted);font-size:17px;
+line-height:1.5;max-width:560px;margin:0 auto 36px
+}
+.actions{
+position:relative;display:flex;justify-content:center;
+align-items:center;gap:14px;min-height:90px
+}
+.btn{
+border:1px solid transparent;border-radius:999px;
+padding:16px 30px;font-weight:600;font-size:16px;
+transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,background .35s
+}
+.btn-primary{
+background:#f5f5f7;color:#050506;
+box-shadow:0 12px 38px rgba(255,255,255,.13)
+}
+.btn-primary:hover{
+transform:scale(1.045);box-shadow:0 18px 52px rgba(255,255,255,.2)
+}
+.btn-secondary{
+background:rgba(255,255,255,.065);
+border-color:var(--line);color:#f5f5f7
+}
+.btn-secondary:hover{background:rgba(255,255,255,.11)}
+.choice-note{
+position:relative;margin-top:24px;color:#626269;font-size:12px
+}
+
+/* FOOTER */
+footer{
+padding:50px 24px 80px;text-align:center;color:#5d5d63;font-size:12px
+}
+.footer-line{
+height:1px;max-width:var(--max);margin:0 auto 35px;
+background:linear-gradient(90deg,transparent,var(--line),transparent)
+}
+
+/* YES SCREEN */
+#yesScreen{
+position:fixed;inset:0;z-index:1000;
+background:radial-gradient(circle at center,#19162c 0%,#08080c 43%,#000 100%);
+display:none;place-items:center;padding:24px;overflow:auto
+}
+.yes-inner{text-align:center;max-width:1000px}
+.yes-inner .mini-avatar{
+width:150px;height:150px;border-radius:50%;object-fit:cover;
+border:3px solid rgba(255,255,255,.25);
+box-shadow:0 30px 90px rgba(0,0,0,.7),0 0 90px rgba(139,92,246,.25);
+margin-bottom:35px
+}
+.yes-inner h1{
+font-size:clamp(58px,10vw,150px);letter-spacing:-.075em;line-height:.92
+}
+.yes-inner p{
+font-size:clamp(18px,2.5vw,27px);color:var(--soft);
+margin:30px auto 45px;line-height:1.45
+}
+.accepted-time{color:var(--muted);font-size:14px;margin-bottom:28px}
+.timer{
+display:flex;justify-content:center;gap:12px;flex-wrap:wrap
+}
+.time-card{
+min-width:110px;padding:22px 14px;border:1px solid var(--line);
+border-radius:22px;background:rgba(255,255,255,.055)
+}
+.time-card strong{
+display:block;font-size:clamp(30px,5vw,52px);
+letter-spacing:-.055em;font-variant-numeric:tabular-nums
+}
+.time-card span{
+display:block;margin-top:7px;color:var(--muted);
+font-size:11px;letter-spacing:.1em
+}
+.yes-close{
+margin-top:40px;background:transparent;border:0;
+color:#7b7b83;font-size:13px
+}
+
+/* TOAST */
+#toast{
+position:fixed;left:50%;bottom:28px;
+transform:translate(-50%,120px);
+background:rgba(35,35,39,.85);border:1px solid var(--line);
+backdrop-filter:blur(22px);padding:13px 18px;
+border-radius:999px;color:#f5f5f7;font-size:13px;
+z-index:5000;transition:transform .5s cubic-bezier(.2,.8,.2,1)
+}
+#toast.show{transform:translate(-50%,0)}
+
+/* MOBILE */
+@media(max-width:760px){
+nav{top:10px;height:54px}
+.nav-status{display:none}
+.hero{padding-top:100px}
+.story-grid{grid-template-columns:1fr}
+.story-card.big{grid-column:auto}
+.story-card{min-height:300px}
+.chapter{padding:120px 20px}
+.quote{padding:130px 20px}
+.stats{grid-template-columns:1fr;padding-bottom:110px}
+.reason{grid-template-columns:48px 1fr}
+.reason p,.reason-plus{display:none}
+.constellation{margin:0 16px;min-height:590px}
+.orbit.o3{width:520px;height:520px}
+.orbit.o2{width:360px;height:360px}
+.question-section{padding:100px 16px}
+.time-card{min-width:76px}
+.yes-inner .mini-avatar{width:120px;height:120px}
+}
+@media(prefers-reduced-motion:reduce){
+*,*:before,*:after{
+animation-duration:.01ms!important;
+transition-duration:.01ms!important;
+scroll-behavior:auto!important
+}
+}
+</style>
+</head>
+
+<body>
+
+<div id="loader">
+<div class="loader-inner">
+<div class="loader-logo">Yağmur.</div>
+<div class="loader-line"><i></i></div>
+<p>PREPARING A MOMENT</p>
+</div>
+</div>
+
+<div id="cursor"></div>
+<div class="grain"></div>
+<div class="orb one"></div>
+<div class="orb two"></div>
+<div class="orb three"></div>
+
+<nav>
+<div class="brand">For Yağmur.</div>
+<div class="nav-status">
+<i class="status-dot"></i>
+<span>Bu an · canlı</span>
+</div>
+<div class="nav-time" id="navClock">--:--:--</div>
+</nav>
+
+<section class="hero" id="top">
+<div class="hero-inner">
+
+<div class="eyebrow">
+<i class="status-dot"></i>
+10 Eylül 2026 · Perşembe
+</div>
+
+<h1>Yağmur.</h1>
+
+<p class="hero-copy">
+Bazı insanları anlatmak için uzun cümlelere gerek yoktur.
+Varlıkları, zaten yeterince şey söyler.
+</p>
+
+<div class="hero-avatar-wrap">
+<div class="avatar-halo"></div>
+<div class="avatar-ring">
+<img class="avatar" src="avatar.JPG" alt="Yağmur'un avatarı">
+</div>
+</div>
+
+<h2 class="hero-question">
+Sana söylemek istediğim bir şey var.
+</h2>
+
+<div class="hero-meta">
+<span id="fullDate">Tarih yükleniyor</span>
+<span id="heroClock">--:--:--</span>
+<span>Bu sayfa sadece senin için.</span>
+</div>
+
+<div class="scroll-cue">
+Devam et
+<i></i>
+</div>
+
+</div>
+</section>
+
+<section class="chapter">
+
+<div class="chapter-kicker">
+01 · Bir düşünceyle başladı
+</div>
+
+<h2 class="display">
+Uzun zamandır
+<span class="muted">konuşuyoruz.</span>
+</h2>
+
+<p class="body-large">
+Ve zaman geçtikçe, bunun sıradan bir sohbet olmadığını fark ettim.
+Bazı günler sadece birkaç mesaj bile günün en iyi kısmı olabiliyor.
+</p>
+
+<div class="story-grid">
+
+<article class="story-card">
+<span class="card-num">01 / 03</span>
+<h3 class="card-title">
+Bazen sadece konuşmak bile yeter.
+</h3>
+<p class="card-text">
+Her şeyin büyük ve gösterişli olması gerekmiyor.
+Bazı şeyler, olduğu gibi güzel.
+</p>
+<i class="card-orb purple"></i>
+</article>
+
+<article class="story-card">
+<span class="card-num">02 / 03</span>
+<h3 class="card-title">
+Bazı insanlar farklı hissettirir.
+</h3>
+<p class="card-text">
+Nedenini hemen açıklayamazsın.
+Sadece fark edersin.
+</p>
+<i class="card-orb blue"></i>
+</article>
+
+<article class="story-card big">
+<span class="card-num">03 / 03</span>
+<h3 class="card-title">
+Ve bazen bir şeyi söylemek için doğru zamanı beklemek yerine,
+cesaret etmek gerekir.
+</h3>
+<p class="card-text">
+Bu sayfa da tam olarak bunun için var.
+</p>
+<i class="card-orb rose"></i>
+</article>
+
+</div>
+</section>
+
+<section class="quote">
+
+<div class="quote-mark">“</div>
+
+<p>
+Seninle konuşurken zamanın nasıl geçtiğini
+anlamadığım oluyor.
+</p>
+
+<small>
+Ve bence bazı şeyler, tam da böyle başlıyor.
+</small>
+
+</section>
+
+<section class="stats">
+
+<div class="stat">
+<strong id="statDays">00</strong>
+<span>Bu yılın kaçıncı günü</span>
+</div>
+
+<div class="stat">
+<strong id="statHour">00</strong>
+<span>Şu anki saat</span>
+</div>
+
+<div class="stat">
+<strong id="statSecond">00</strong>
+<span>Geçen saniye</span>
+</div>
+
+</section>
+
+<section class="constellation">
+
+<div class="stars"></div>
+
+<div class="orbit o1"></div>
+<div class="orbit o2"></div>
+<div class="orbit o3"></div>
+
+<i class="planet p1"></i>
+<i class="planet p2"></i>
+<i class="planet p3"></i>
+
+<div class="constellation-content">
+
+<div>
+
+<div class="chapter-kicker">
+02 · Tesadüf mü?
+</div>
+
+<h2>
+Belki de bazı karşılaşmaların
+bir nedeni vardır.
+</h2>
+
+<p>
+Kim bilir. Belki hiçbir şeyi fazla açıklamak gerekmiyordur.
+Bazen sadece iyi hissettirmesi yeterlidir.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="reasons">
+
+<div class="chapter-kicker">
+03 · Küçük detaylar
+</div>
+
+<h2 class="display">
+Neden mi
+<span class="muted">sen?</span>
+</h2>
+
+<div class="reason-list">
+
+<div class="reason">
+<span class="reason-index">01</span>
+<div>
+<h3>Çünkü seninle konuşmak güzel.</h3>
+<p>Bazı sohbetlerin bitmesini istemezsin.</p>
+</div>
+<span class="reason-plus">+</span>
+</div>
+
+<div class="reason">
+<span class="reason-index">02</span>
+<div>
+<h3>Çünkü doğal geliyor.</h3>
+<p>Zorlamadan, rol yapmadan, olduğu gibi.</p>
+</div>
+<span class="reason-plus">+</span>
+</div>
+
+<div class="reason">
+<span class="reason-index">03</span>
+<div>
+<h3>Çünkü merak ediyorum.</h3>
+<p>Seni daha fazla tanımayı gerçekten istiyorum.</p>
+</div>
+<span class="reason-plus">+</span>
+</div>
+
+<div class="reason">
+<span class="reason-index">04</span>
+<div>
+<h3>Çünkü bunu saklamak istemedim.</h3>
+<p>Bazı şeyler söylenmeyi hak eder.</p>
+</div>
+<span class="reason-plus">+</span>
+</div>
+
+<div class="reason">
+<span class="reason-index">05</span>
+<div>
+<h3>Çünkü bu an gerçek.</h3>
+<p>Ve şu an burada olman bile bunun bir parçası.</p>
+</div>
+<span class="reason-plus">+</span>
+</div>
+
+</div>
+</section>
+
+<section class="moment">
+
+<div class="moment-panel">
+
+<div class="chapter-kicker">
+04 · Şimdi
+</div>
+
+<h2>
+Belki de en iyi hikâyeler,
+<br>
+tek bir soruyla başlar.
+</h2>
+
+<p>
+O yüzden fazla uzatmadan, ama bu anı da sıradanlaştırmadan
+sana gerçekten sormak istiyorum.
+</p>
+
+</div>
+
+</section>
+
+<section class="question-section" id="question">
+
+<div class="question-shell">
+
+<div class="eyebrow">
+THE QUESTION
+</div>
+
+<img
+class="final-avatar"
+src="avatar.JPG"
+alt="Yağmur'un avatarı"
+>
+
+<h2>
+Benimle sevgili olur musun?
+</h2>
+
+<p>
+Ne cevabın olursa olsun, dürüstçe cevap vermen benim için önemli.
+Ama evet, içimde bir umut var.
+</p>
+
+<div class="actions">
+
+<button class="btn btn-primary" id="yesBtn">
+Evet
+</button>
+
+<button class="btn btn-secondary" id="noBtn">
+Hayır
+</button>
+
+</div>
+
+<div class="choice-note" id="choiceNote">
+Seçim senin. Her zaman.
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+<div class="footer-line"></div>
+
+<p>
+For Yağmur. · Made for one person, at one particular moment.
+</p>
+
+<p id="footerDate" style="margin-top:10px"></p>
+
+</footer>
+
+<div id="yesScreen">
+
+<div class="yes-inner">
+
+<img
+class="mini-avatar"
+src="avatar.JPG"
+alt="Yağmur"
+>
+
+<h1>
+Güzel bir başlangıç.
+</h1>
+
+<p>
+Bu anı unutmayacağım.
+Ve umarım bundan sonrası, ikimizin de gülümseyerek
+hatırlayacağı bir hikâye olur.
+</p>
+
+<div class="accepted-time" id="acceptedTime"></div>
+
+<div class="timer">
+
+<div class="time-card">
+<strong id="tDays">00</strong>
+<span>GÜN</span>
+</div>
+
+<div class="time-card">
+<strong id="tHours">00</strong>
+<span>SAAT</span>
+</div>
+
+<div class="time-card">
+<strong id="tMinutes">00</strong>
+<span>DAKİKA</span>
+</div>
+
+<div class="time-card">
+<strong id="tSeconds">00</strong>
+<span>SANİYE</span>
+</div>
+
+</div>
+
+<button class="yes-close" id="closeYes">
+Bu an burada kalsın.
+</button>
+
+</div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+
+const $ = s => document.querySelector(s);
+
+const loader = $("#loader");
+const cursor = $("#cursor");
+const toast = $("#toast");
+
+window.addEventListener("load", () => {
+
+setTimeout(() => {
+
+loader.style.opacity = "0";
+loader.style.visibility = "hidden";
+
+}, 700);
+
+});
+
+document.addEventListener("mousemove", e => {
+
+cursor.style.left = e.clientX + "px";
+cursor.style.top = e.clientY + "px";
+
+});
+
+document.querySelectorAll(
+"button,a,.story-card"
+).forEach(el => {
+
+el.addEventListener("mouseenter", () => {
+
+cursor.style.width = "32px";
+cursor.style.height = "32px";
+cursor.style.background = "rgba(255,255,255,.18)";
+
+});
+
+el.addEventListener("mouseleave", () => {
+
+cursor.style.width = "18px";
+cursor.style.height = "18px";
+cursor.style.background = "transparent";
+
+});
+
+});
+
+function updateTime(){
+
+const n = new Date();
+
+const days = [
+"Pazar",
+"Pazartesi",
+"Salı",
+"Çarşamba",
+"Perşembe",
+"Cuma",
+"Cumartesi"
+];
+
+const months = [
+"Ocak",
+"Şubat",
+"Mart",
+"Nisan",
+"Mayıs",
+"Haziran",
+"Temmuz",
+"Ağustos",
+"Eylül",
+"Ekim",
+"Kasım",
+"Aralık"
+];
+
+const time = n.toLocaleTimeString(
+"tr-TR",
+{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+}
+);
+
+const date =
+`${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()} · ${days[n.getDay()]}`;
+
+$("#navClock").textContent = time;
+
+$("#heroClock").textContent = time;
+
+$("#fullDate").textContent = date;
+
+$("#footerDate").textContent =
+date + " · " + time;
+
+$("#statHour").textContent =
+String(n.getHours()).padStart(2,"0");
+
+$("#statSecond").textContent =
+String(n.getSeconds()).padStart(2,"0");
+
+const start =
+new Date(n.getFullYear(),0,0);
+
+$("#statDays").textContent =
+String(
+Math.floor(
+(n-start)/86400000
+)
+).padStart(2,"0");
+
+}
+
+updateTime();
+
+setInterval(updateTime,1000);
+
+function showToast(text){
+
+toast.textContent = text;
+
+toast.classList.add("show");
+
+clearTimeout(window.toastTimer);
+
+window.toastTimer =
+setTimeout(() => {
+
+toast.classList.remove("show");
+
+},2600);
+
+}
+
+/* HAYIR SİSTEMİ */
+
+let noCount = 0;
+
+const noTexts = [
+
+"Hayır",
+"Emin misin?",
+"Tekrar düşün",
+"Gerçekten mi?",
+"Son kararın mı?",
+"Anlıyorum.",
+"Yine de cevabın sana ait."
+
+];
+
+$("#noBtn").addEventListener(
+"click",
+() => {
+
+noCount++;
+
+const yes = $("#yesBtn");
+
+const no = $("#noBtn");
+
+const scale =
+Math.min(
+1 + noCount * .09,
+1.7
+);
+
+yes.style.transform =
+`scale(${scale})`;
+
+if(
+noCount < noTexts.length
+){
+
+no.textContent =
+noTexts[noCount];
+
+}
+
+if(noCount === 2){
+
+$("#choiceNote").textContent =
+"Hiçbir şeyi zorlamak istemiyorum.";
+
+}
+
+if(noCount === 4){
+
+$("#choiceNote").textContent =
+"Gerçekten. Cevabına saygı duyarım.";
+
+no.style.opacity = ".72";
+
+}
+
+if(noCount >= 6){
+
+yes.style.transform =
+"scale(1.55)";
+
+no.style.transform =
+"scale(.94)";
+
+}
+
+}
+);
+
+/* EVET SİSTEMİ */
+
+let acceptedAt = null;
+
+let timerId = null;
+
+function updateRelationship(){
+
+if(!acceptedAt) return;
+
+let d =
+Date.now() - acceptedAt;
+
+let days =
+Math.floor(d/86400000);
+
+d %= 86400000;
+
+let h =
+Math.floor(d/3600000);
+
+d %= 3600000;
+
+let m =
+Math.floor(d/60000);
+
+d %= 60000;
+
+let s =
+Math.floor(d/1000);
+
+$("#tDays").textContent =
+String(days).padStart(2,"0");
+
+$("#tHours").textContent =
+String(h).padStart(2,"0");
+
+$("#tMinutes").textContent =
+String(m).padStart(2,"0");
+
+$("#tSeconds").textContent =
+String(s).padStart(2,"0");
+
+}
+
+$("#yesBtn").addEventListener(
+"click",
+() => {
+
+acceptedAt = Date.now();
+
+$("#yesScreen").style.display =
+"grid";
+
+const n =
+new Date(acceptedAt);
+
+$("#acceptedTime").textContent =
+n.toLocaleDateString(
+"tr-TR",
+{
+day:"2-digit",
+month:"long",
+year:"numeric"
+}
+)
++
+" · "
++
+n.toLocaleTimeString(
+"tr-TR",
+{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+}
+);
+
+updateRelationship();
+
+clearInterval(timerId);
+
+timerId =
+setInterval(
+updateRelationship,
+1000
+);
+
+showToast(
+"Bu an kaydedildi."
+);
+
+}
+);
+
+$("#closeYes").addEventListener(
+"click",
+() => {
+
+$("#yesScreen").style.display =
+"none";
+
+}
+);
+
+/* SCROLL ANIMATION */
+
+const observer =
+new IntersectionObserver(
+
+entries =>
+
+entries.forEach(e => {
+
+if(e.isIntersecting){
+
+e.target.animate(
+
+[
+{
+opacity:0,
+transform:"translateY(28px)"
+},
+{
+opacity:1,
+transform:"none"
+}
+],
+
+{
+duration:800,
+easing:"cubic-bezier(.2,.8,.2,1)",
+fill:"both"
+}
+
+);
+
+observer.unobserve(
+e.target
+);
+
+}
+
+}),
+
+{
+threshold:.15
+}
+
+);
+
+document.querySelectorAll(
+
+".chapter,.quote,.stats,.constellation,.reasons,.moment-panel"
+
+).forEach(
+
+e => observer.observe(e)
+
+);
+
+</script>
+
+</body>
+</html>
